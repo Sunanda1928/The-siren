@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>The Siren – Scam Detector</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+  <h1>The Siren</h1>
+  <p>Paste a message or call transcript to check if it is a scam.</p>
+
+  <textarea id="message" rows="6" cols="60" placeholder="Paste message here..."></textarea>
+  <br><br>
+
+  <label>Select Language:</label>
+  <select id="language">
+    <option>English</option>
+    <option>Hindi</option>
+    <option>Telugu</option>
+    <option>Tamil</option>
+  </select>
+
+  <br><br>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <h3>Result:</h3>
+  <div id="result">No analysis yet.</div>
+
+  <script>
+  function analyze() {
+    var msg = document.getElementById("message").value.toLowerCase();
+    var language = document.getElementById("language").value;
+    var resultText = "";
+    var voiceText = "";
+
+    if (
+      msg.includes("otp") ||
+      msg.includes("click") ||
+      msg.includes("link") ||
+      msg.includes("urgent") ||
+      msg.includes("blocked")
+    ) {
+      resultText =
+        "⚠️ Likely Scam\n\n" +
+        "Reason: This message shows common scam patterns.\n" +
+        "Advice: Do NOT click links or share OTP.";
+
+      if (language === "Hindi") {
+        voiceText = "यह धोखाधड़ी संदेश है। लिंक या ओटीपी साझा न करें।";
+      } else if (language === "Telugu") {
+        voiceText = "ఇది మోసపూరిత సందేశం. లింక్ లేదా ఓటీపీ ఇవ్వవద్దు.";
+      } else if (language === "Tamil") {
+        voiceText = "இது மோசடி செய்தி. லிங்க் அல்லது ஓடிபி பகிர வேண்டாம்.";
+      } else {
+        voiceText = "This is a scam message. Do not click links or share OTP.";
+      }
+
+    } else {
+      resultText =
+        "✅ Looks Safe\n\n" +
+        "Reason: No common scam signs detected.\n" +
+        "Advice: Still verify the sender.";
+
+      voiceText = "No scam detected. Please verify the sender before trusting.";
+    }
+
+    document.getElementById("result").innerText = resultText;
+
+    // Voice Alert
+    var speech = new SpeechSynthesisUtterance(voiceText);
+    speech.lang =
+      language === "Hindi" ? "hi-IN" :
+      language === "Telugu" ? "te-IN" :
+      language === "Tamil" ? "ta-IN" :
+      "en-US";
+
+    window.speechSynthesis.speak(speech);
+  }
+</script>
+
+
+
+</body>
+</html>
