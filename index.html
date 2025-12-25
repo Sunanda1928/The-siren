@@ -33,6 +33,7 @@
     var language = document.getElementById("language").value;
     var resultText = "";
     var voiceText = "";
+    var langCode = "en-US";
 
     if (
       msg.includes("otp") ||
@@ -47,35 +48,59 @@
         "Advice: Do NOT click links or share OTP.";
 
       if (language === "Hindi") {
-        voiceText = "यह धोखाधड़ी संदेश है। लिंक या ओटीपी साझा न करें।";
+        voiceText = "यह धोखाधड़ी संदेश है। कृपया लिंक या ओटीपी साझा न करें।";
+        langCode = "hi-IN";
       } else if (language === "Telugu") {
-        voiceText = "ఇది మోసపూరిత సందేశం. లింక్ లేదా ఓటీపీ ఇవ్వవద్దు.";
+        voiceText = "ఇది మోసపూరిత సందేశం. దయచేసి లింక్ లేదా ఓటీపీ ఇవ్వవద్దు.";
+        langCode = "te-IN";
       } else if (language === "Tamil") {
-        voiceText = "இது மோசடி செய்தி. லிங்க் அல்லது ஓடிபி பகிர வேண்டாம்.";
+        voiceText = "இது மோசடி செய்தி. தயவுசெய்து லிங்க் அல்லது ஓடிபி பகிர வேண்டாம்.";
+        langCode = "ta-IN";
       } else {
         voiceText = "This is a scam message. Do not click links or share OTP.";
+        langCode = "en-US";
       }
-
     } else {
       resultText =
         "✅ Looks Safe\n\n" +
         "Reason: No common scam signs detected.\n" +
         "Advice: Still verify the sender.";
 
-      voiceText = "No scam detected. Please verify the sender before trusting.";
+      if (language === "Hindi") {
+        voiceText = "कोई धोखाधड़ी नहीं पाई गई। कृपया प्रेषक की पुष्टि करें।";
+        langCode = "hi-IN";
+      } else if (language === "Telugu") {
+        voiceText = "మోసం గుర్తించబడలేదు. పంపినవారిని నిర్ధారించండి.";
+        langCode = "te-IN";
+      } else if (language === "Tamil") {
+        voiceText = "மோசடி கண்டறியப்படவில்லை. அனுப்பியவரை சரிபார்க்கவும்.";
+        langCode = "ta-IN";
+      } else {
+        voiceText = "No scam detected. Please verify the sender.";
+        langCode = "en-US";
+      }
     }
 
     document.getElementById("result").innerText = resultText;
 
-    // Voice Alert
-    var speech = new SpeechSynthesisUtterance(voiceText);
-    speech.lang =
-      language === "Hindi" ? "hi-IN" :
-      language === "Telugu" ? "te-IN" :
-      language === "Tamil" ? "ta-IN" :
-      "en-US";
+    // 🔊 FIXED VOICE LOGIC
+    window.speechSynthesis.cancel(); // clear stuck audio
 
-    window.speechSynthesis.speak(speech);
+    var utterance = new SpeechSynthesisUtterance(voiceText);
+    utterance.lang = langCode;
+    utterance.rate = 0.8;   // slower & clearer
+    utterance.pitch = 1.0;
+
+    // Select correct voice explicitly
+    var voices = window.speechSynthesis.getVoices();
+    for (var i = 0; i < voices.length; i++) {
+      if (voices[i].lang === langCode) {
+        utterance.voice = voices[i];
+        break;
+      }
+    }
+
+    window.speechSynthesis.speak(utterance);
   }
 </script>
 
@@ -83,3 +108,4 @@
 
 </body>
 </html>
+
