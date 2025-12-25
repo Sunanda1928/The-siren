@@ -52,5 +52,3 @@ By combining AI reasoning with voice-based accessibility, this project reflects 
 Sunanda Vankela
 Built for Google Startup School: Prompt to Prototype
 
-Sunanda Vankela
-Built for Google Startup School: Prompt to Prototype
